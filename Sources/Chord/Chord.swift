@@ -87,6 +87,42 @@ class LockedCounter
             self.outerLock.wait()
         }
     }
+    
+    func wait(timeout: DispatchTime) -> DispatchTimeoutResult
+    {
+        self.innerLock.enter()
+        
+        let count = self.counter
+        
+        self.innerLock.leave()
+        
+        if count == 0
+        {
+            return DispatchTimeoutResult.success
+        }
+        else
+        {
+            return self.outerLock.wait(timeout: timeout)
+        }
+    }
+    
+    func wait(wallTimeout: DispatchWallTime) -> DispatchTimeoutResult
+    {
+        self.innerLock.enter()
+        
+        let count = self.counter
+        
+        self.innerLock.leave()
+        
+        if count == 0
+        {
+            return DispatchTimeoutResult.success
+        }
+        else
+        {
+            return self.outerLock.wait(wallTimeout: wallTimeout)
+        }
+    }
 }
     
 extension LockedCounter: CustomStringConvertible
