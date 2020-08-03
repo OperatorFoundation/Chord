@@ -1,6 +1,6 @@
 import Foundation
 
-class Chord
+public class Chord
 {
     var queue: DispatchQueue
     var counter: LockedCounter
@@ -11,7 +11,7 @@ class Chord
         self.queue = DispatchQueue(label: "testing", qos: .userInitiated, attributes: .concurrent, autoreleaseFrequency: .workItem, target: nil)
     }
     
-    func async(_ function: @escaping () -> Void)
+    public func async(_ function: @escaping () -> Void)
     {
         self.counter.increment()
         self.queue.async
@@ -22,27 +22,27 @@ class Chord
         }
     }
     
-    func wait()
+    public func wait()
     {
         self.counter.wait()
     }
 }
 
-class LockedCounter
+public class LockedCounter
 {
     var outerLock: DispatchGroup
     
     var innerLock: DispatchGroup
     var counter: UInt
 
-    init()
+    public init()
     {
         self.outerLock = DispatchGroup()
         self.innerLock = DispatchGroup()
         self.counter = 0
     }
     
-    func increment()
+    public func increment()
     {
         self.innerLock.enter()
         
@@ -56,7 +56,7 @@ class LockedCounter
         self.innerLock.leave()
     }
     
-    func decrement()
+    public func decrement()
     {
         self.innerLock.enter()
         
@@ -70,7 +70,7 @@ class LockedCounter
         self.innerLock.leave()
     }
     
-    func wait()
+    public func wait()
     {
         self.innerLock.enter()
         
@@ -88,7 +88,7 @@ class LockedCounter
         }
     }
     
-    func wait(timeout: DispatchTime) -> DispatchTimeoutResult
+    public func wait(timeout: DispatchTime) -> DispatchTimeoutResult
     {
         self.innerLock.enter()
         
@@ -106,7 +106,7 @@ class LockedCounter
         }
     }
     
-    func wait(wallTimeout: DispatchWallTime) -> DispatchTimeoutResult
+    public func wait(wallTimeout: DispatchWallTime) -> DispatchTimeoutResult
     {
         self.innerLock.enter()
         
@@ -127,13 +127,13 @@ class LockedCounter
     
 extension LockedCounter: CustomStringConvertible
 {
-    var description: String
+    public var description: String
     {
         return "LockedCounter: \(self.counter)"
     }
 }
 
-extension Array
+public extension Array
 {
     func parallelMap<Target>(function: @escaping (Element) -> Target) -> [Target]
     {

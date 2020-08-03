@@ -26,5 +26,6 @@ let package = Package(
         .testTarget(
             name: "ChordTests",
             dependencies: ["Chord", "Datable"]),
-    ]
+    ],
+    swiftLanguageVersions: [.v5]
 )
