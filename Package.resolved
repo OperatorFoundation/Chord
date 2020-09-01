@@ -9,6 +9,15 @@
           "revision": "1c23f2b72d0d0cf4386fad05f8a5db4b91e8d304",
           "version": "3.0.2"
         }
+      },
+      {
+        "package": "SwiftQueue",
+        "repositoryURL": "https://github.com/OperatorFoundation/SwiftQueue",
+        "state": {
+          "branch": null,
+          "revision": "0e5979acbb104516a427bb2bb09debc50ca100b4",
+          "version": "0.0.3"
+        }
       }
     ]
   },

@@ -50,4 +50,26 @@ final class ChordTests: XCTestCase {
                 
         XCTAssertEqual(result, correct)
     }
+    
+    func testBlockingQueue()
+    {
+        let correct = 1
+        let dequeued = expectation(description: "dequeued element")
+        
+        let queue = BlockingQueue<Int>()
+        
+        DispatchQueue.main.async
+        {
+            let result = queue.dequeue()
+            
+            if result == correct
+            {
+                dequeued.fulfill()
+            }
+        }
+                
+        queue.enqueue(element: 1)
+        
+        wait(for: [dequeued], timeout: 30)
+    }
 }
