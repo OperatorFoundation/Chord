@@ -14,6 +14,10 @@ public class BlockingQueue<T>
     var lock = DispatchGroup()
     var counter = InvertedLockedCounter()
     
+    public init()
+    {
+    }
+    
     public func enqueue(element: T)
     {
         lock.enter()
