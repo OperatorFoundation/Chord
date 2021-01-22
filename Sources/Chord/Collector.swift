@@ -72,4 +72,13 @@ public class Collector<O>
             self.lock.leave()
         }
     }
+
+    public func popOutput() -> O?
+    {
+        self.lock.enter()
+        let output = outputs.popLast()
+        self.lock.leave()
+
+        return output
+    }
 }
