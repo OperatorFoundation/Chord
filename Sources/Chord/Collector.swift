@@ -52,4 +52,24 @@ public class Collector<O>
             self.lock.leave()
         }
     }
+
+    public func addFailableTask(_ task: @escaping () -> O?)
+    {
+        queue.async
+        {
+            self.lock.enter()
+            self.taskCount += 1
+            self.lock.leave()
+
+            let maybeOutput = task()
+
+            self.lock.enter()
+            self.taskCount -= 1
+            if let output = maybeOutput
+            {
+                self.outputs.append(output)
+            }
+            self.lock.leave()
+        }
+    }
 }
