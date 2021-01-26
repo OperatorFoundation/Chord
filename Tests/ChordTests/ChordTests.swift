@@ -72,4 +72,20 @@ final class ChordTests: XCTestCase {
         
         wait(for: [dequeued], timeout: 30)
     }
+    
+    func testRepeatingTask()
+    {
+        let repeatingTask = RepeatingTask
+        {
+            let randomInt = Int.random(in: 0..<10)
+            print(randomInt)
+            sleep(2)
+            // Keep running until we get a 5 or cancel is called
+            return randomInt != 5
+        }
+        
+        sleep(5)
+        repeatingTask.cancel()
+        repeatingTask.wait()
+    }
 }
