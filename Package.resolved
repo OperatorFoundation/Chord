@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/OperatorFoundation/Datable",
         "state": {
           "branch": null,
-          "revision": "1c23f2b72d0d0cf4386fad05f8a5db4b91e8d304",
-          "version": "3.0.2"
+          "revision": "59dfd564b1d0e69313cb13ce87adc4ea2281df79",
+          "version": "3.1.1"
         }
       },
       {
@@ -15,8 +15,8 @@
         "repositoryURL": "https://github.com/OperatorFoundation/SwiftQueue",
         "state": {
           "branch": null,
-          "revision": "eaa39c586fddb49ad1e0e8b5b3e9b0aaf0b3be82",
-          "version": "0.1.0"
+          "revision": "22f628f3208be8e70c06e9577913e56177c47702",
+          "version": "0.1.1"
         }
       }
     ]
