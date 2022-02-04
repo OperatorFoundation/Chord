@@ -45,25 +45,9 @@ public class FilteredQueue<T>
         lock.leave()
     }
 
-    public func dequeue(match: @escaping (T) -> Bool, handle: @escaping (T) -> ()) -> T
+    public func dequeue(match: @escaping (T) -> Bool, handle: @escaping (T) -> ())
     {
-        let dequeueLock = DispatchGroup()
-        dequeueLock.enter()
-
-        var maybeResult: T? = nil
-
-        let handle =
-        {
-            (element: T) in
-
-            maybeResult = element
-            dequeueLock.leave()
-        }
-
         self.addFilter(match: match, handle: handle)
-        dequeueLock.wait()
-
-        return maybeResult!
     }
 
     public func addFilter(match: @escaping (T) -> Bool, handle: @escaping (T) -> ())
