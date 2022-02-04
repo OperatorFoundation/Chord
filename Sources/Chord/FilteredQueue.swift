@@ -25,7 +25,7 @@ public class FilteredQueue<T>
         self.otherwise = otherwise
     }
 
-    public func enqueue(element: T)
+    public func enqueue(_ element: T)
     {
         lock.enter()
 
