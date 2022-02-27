@@ -2,8 +2,10 @@ import Foundation
    
 public class InvertedLockedCounter
 {
+    // Locks the InvertedLockCounter until the counter reaches zero
     var outerLock: DispatchGroup
-    
+
+    // Locks the internal counter variable
     var innerLock: DispatchGroup
     var counter: UInt
 
