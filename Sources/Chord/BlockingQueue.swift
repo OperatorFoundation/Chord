@@ -41,7 +41,7 @@ public class BlockingQueue<T>
         queueLock.leave()
     }
     
-    public func dequeue() -> T?
+    public func dequeue() -> T
     {
         // Wait for the queue to be non-empty
         nonemptyLock.wait()
@@ -50,12 +50,16 @@ public class BlockingQueue<T>
 
         nonemptyLock.wait()
 
-        guard let result = queue.dequeue() else
+        var maybeResult: T? = nil
+        while maybeResult == nil
         {
-            nonemptyLock.enter()
-            queueLock.leave()
-            return nil
+            maybeResult = queue.dequeue()
+            if maybeResult == nil
+            {
+                nonemptyLock.wait()
+            }
         }
+        let result = maybeResult! // Safe because we can't exit the loop until it's non-null.
 
         if queue.isEmpty
         {
