@@ -15,7 +15,6 @@ let package = Package(
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),
-        .package(url: "https://github.com/apple/swift-atomics.git", from: "1.0.2"),
         .package(name: "Datable", url: "https://github.com/OperatorFoundation/Datable", branch: "main"),
         .package(url: "https://github.com/OperatorFoundation/SwiftQueue", branch: "main"),
     ],
@@ -26,7 +25,6 @@ let package = Package(
             name: "Chord",
             dependencies: [
                 "SwiftQueue",
-                .product(name: "Atomics", package: "swift-atomics"),
             ]),
         .testTarget(
             name: "ChordTests",
