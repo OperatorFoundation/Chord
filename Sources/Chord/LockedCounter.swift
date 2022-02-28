@@ -41,7 +41,8 @@ public class LockedCounter
         
         self.innerLock.leave()
     }
-    
+
+    // Wait for count = 0
     public func wait()
     {
         self.innerLock.enter()
@@ -60,6 +61,7 @@ public class LockedCounter
         }
     }
     
+    // Wait for count = 0
     public func wait(timeout: DispatchTime) -> DispatchTimeoutResult
     {
         self.innerLock.enter()
@@ -78,6 +80,7 @@ public class LockedCounter
         }
     }
     
+    // Wait for count = 0
     public func wait(wallTimeout: DispatchWallTime) -> DispatchTimeoutResult
     {
         self.innerLock.enter()

@@ -35,8 +35,15 @@ public class InvertedLockedCounter
     public func decrement()
     {
         self.innerLock.enter()
-        
-        self.counter = self.counter - 1
+
+        if counter > 1
+        {
+            self.counter = self.counter - 1
+        }
+        else
+        {
+            print("InvertedLockCounter: synchronization error")
+        }
                 
         if self.counter == 0
         {
@@ -45,7 +52,8 @@ public class InvertedLockedCounter
         
         self.innerLock.leave()
     }
-    
+
+    // Wait for count > 0
     public func wait()
     {
         self.innerLock.enter()
@@ -64,6 +72,7 @@ public class InvertedLockedCounter
         }
     }
     
+    // Wait for count > 0
     public func wait(timeout: DispatchTime) -> DispatchTimeoutResult
     {
         self.innerLock.enter()
@@ -82,6 +91,7 @@ public class InvertedLockedCounter
         }
     }
     
+    // Wait for count > 0
     public func wait(wallTimeout: DispatchWallTime) -> DispatchTimeoutResult
     {
         self.innerLock.enter()

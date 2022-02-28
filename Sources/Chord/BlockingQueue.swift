@@ -32,6 +32,7 @@ public class BlockingQueue<T>
     {
         while true
         {
+            // Wait for counter > 0
             counter.wait()
 
             lock.enter()
