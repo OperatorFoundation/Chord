@@ -8,9 +8,10 @@
 import Foundation
 import SwiftQueue
 
-public actor BlockingQueue<T>
+public class BlockingQueue<T>
 {
     var queue = Queue<T>()
+    var queueLock = DispatchGroup()
     var nonemptyLock = DispatchGroup()
 
     public init()
@@ -21,6 +22,8 @@ public actor BlockingQueue<T>
     
     public func enqueue(element: T)
     {
+        queueLock.enter()
+
         // Was the queue previously empty?
         let wasEmpty: Bool = queue.isEmpty
 
@@ -34,6 +37,8 @@ public actor BlockingQueue<T>
             // Otherwise, the nonemptyLock is not locked, so we shouldn't unlock it.
             self.nonemptyLock.leave()
         }
+
+        queueLock.leave()
     }
     
     public func dequeue() -> T?
@@ -41,9 +46,14 @@ public actor BlockingQueue<T>
         // Wait for the queue to be non-empty
         nonemptyLock.wait()
 
+        queueLock.enter()
+
+        nonemptyLock.wait()
+
         guard let result = queue.dequeue() else
         {
             nonemptyLock.enter()
+            queueLock.leave()
             return nil
         }
 
@@ -51,6 +61,8 @@ public actor BlockingQueue<T>
         {
             nonemptyLock.enter()
         }
+
+        queueLock.leave()
 
         return result
     }

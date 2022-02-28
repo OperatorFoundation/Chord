@@ -60,7 +60,7 @@ final class ChordTests: XCTestCase {
         
         Task
         {
-            let result = await queue.dequeue()
+            let result = queue.dequeue()
             
             if result == correct
             {
@@ -68,7 +68,7 @@ final class ChordTests: XCTestCase {
             }
         }
                 
-        await queue.enqueue(element: 1)
+        queue.enqueue(element: 1)
         
         wait(for: [dequeued], timeout: 30)
     }
