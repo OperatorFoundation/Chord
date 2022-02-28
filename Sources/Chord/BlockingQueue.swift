@@ -30,15 +30,21 @@ public class BlockingQueue<T>
     
     public func dequeue() -> T
     {
-        counter.wait()
+        while true
+        {
+            counter.wait()
 
-        lock.enter()
-        
-        let result = queue.dequeue()!
-        counter.decrement()
-        
-        lock.leave()
-        
-        return result
+            lock.enter()
+
+            guard let result = queue.dequeue() else
+            {
+                lock.leave()
+                continue
+            }
+
+            counter.decrement()
+            lock.leave()
+            return result
+        }
     }
 }
