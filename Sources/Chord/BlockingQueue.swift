@@ -8,44 +8,50 @@
 import Foundation
 import SwiftQueue
 
-public class BlockingQueue<T>
+public actor BlockingQueue<T>
 {
     var queue = Queue<T>()
-    var lock = DispatchGroup()
-    var counter = InvertedLockedCounter()
-    
+    var nonemptyLock = DispatchGroup()
+
     public init()
     {
+        // Queue is initially empty
+        self.nonemptyLock.enter()
     }
     
     public func enqueue(element: T)
     {
-        lock.enter()
-        
+        // Was the queue previously empty?
+        let wasEmpty: Bool = queue.isEmpty
+
+        // The queue is now definitely non-Empty
         queue.enqueue(element)
-        counter.increment()
-        
-        lock.leave()
+
+        // Did we just transition from empty to non-empty?
+        if wasEmpty
+        {
+            // If so, the nonemptyLock is locked and we need to unlock it.
+            // Otherwise, the nonemptyLock is not locked, so we shouldn't unlock it.
+            self.nonemptyLock.leave()
+        }
     }
     
-    public func dequeue() -> T
+    public func dequeue() -> T?
     {
-        while true
+        // Wait for the queue to be non-empty
+        nonemptyLock.wait()
+
+        guard let result = queue.dequeue() else
         {
-            // Wait for counter > 0
-            counter.wait()
-
-            lock.enter()
-
-            guard let result = queue.dequeue() else
-            {
-                lock.leave()
-                continue
-            }
-
-            counter.decrement()
-            lock.leave()
-            return result
+            nonemptyLock.enter()
+            return nil
         }
+
+        if queue.isEmpty
+        {
+            nonemptyLock.enter()
+        }
+
+        return result
     }
 }
