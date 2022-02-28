@@ -36,7 +36,7 @@ public class InvertedLockedCounter
     {
         self.innerLock.enter()
 
-        if counter > 1
+        if counter > 0
         {
             self.counter = self.counter - 1
         }
