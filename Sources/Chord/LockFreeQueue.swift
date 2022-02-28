@@ -5,6 +5,7 @@
 //  Created by Dr. Brandon Wiley on 2/27/22.
 //
 
+#if os(macOS) || os(iOS)
 import Atomics
 import Foundation
 
@@ -110,3 +111,4 @@ class LockFreeQueue<Element> {
         }
     }
 }
+#endif
