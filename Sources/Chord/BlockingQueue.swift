@@ -8,65 +8,32 @@
 import Foundation
 import SwiftQueue
 
-public class BlockingQueue<T>
+public class BlockingQueue<T>: @unchecked Sendable
 {
-    var queue = Queue<T>()
-    var queueLock = DispatchGroup()
-    var nonemptyLock = DispatchGroup()
+    var value: T? = nil
+    var enqueueLock = DispatchSemaphore(value: 1)
+    var dequeueLock = DispatchSemaphore(value: 0)
 
     public init()
     {
-        // Queue is initially empty
-        self.nonemptyLock.enter()
     }
     
     public func enqueue(element: T)
     {
-        queueLock.enter()
+        enqueueLock.wait()
 
-        // Was the queue previously empty?
-        let wasEmpty: Bool = queue.isEmpty
+        self.value = element
 
-        // The queue is now definitely non-Empty
-        queue.enqueue(element)
-
-        // Did we just transition from empty to non-empty?
-        if wasEmpty
-        {
-            // If so, the nonemptyLock is locked and we need to unlock it.
-            // Otherwise, the nonemptyLock is not locked, so we shouldn't unlock it.
-            self.nonemptyLock.leave()
-        }
-
-        queueLock.leave()
+        dequeueLock.signal()
     }
     
     public func dequeue() -> T
     {
-        // Wait for the queue to be non-empty
-        nonemptyLock.wait()
+        dequeueLock.wait()
 
-        queueLock.enter()
+        let result = value!
 
-        nonemptyLock.wait()
-
-        var maybeResult: T? = nil
-        while maybeResult == nil
-        {
-            maybeResult = queue.dequeue()
-            if maybeResult == nil
-            {
-                nonemptyLock.wait()
-            }
-        }
-        let result = maybeResult! // Safe because we can't exit the loop until it's non-null.
-
-        if queue.isEmpty
-        {
-            nonemptyLock.enter()
-        }
-
-        queueLock.leave()
+        enqueueLock.signal()
 
         return result
     }
