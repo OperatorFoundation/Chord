@@ -11,7 +11,7 @@ import SwiftQueue
 public class BlockingQueue<T>: @unchecked Sendable
 {
     var value: T? = nil
-    var enqueueLock = DispatchSemaphore(value: 1)
+    var enqueueLock = DispatchSemaphore(value: 0)
     var dequeueLock = DispatchSemaphore(value: 0)
 
     public init()
