@@ -31,7 +31,8 @@ public class BlockingQueue<T>: @unchecked Sendable
     {
         dequeueLock.wait()
 
-        let result = value!
+        let result = self.value!
+        self.value = nil
 
         enqueueLock.signal()
 
