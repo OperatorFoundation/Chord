@@ -48,3 +48,26 @@ public class Synchronizer
         return result!
     }
 }
+
+public class MainThreadSynchronizer
+{
+    static public func sync<T>(_ function: @escaping Caller<T>) -> T
+    {
+        let lock = DispatchGroup()
+        
+        var result: T?
+        
+        lock.enter()
+        DispatchQueue.main.async {
+            function
+            {
+                result = $0
+                lock.leave()
+            }
+        }
+    
+        lock.wait()
+        
+        return result!
+    }
+}
