@@ -49,6 +49,10 @@ public class BlockingQueue<T>: @unchecked Sendable
         dequeueLock.wait()
 //        print("BlockingQueue[\(self.name)].dequeue: passed dequeueLock")
 
+        if self.value == nil {
+            print("tried to dequeue a nil value")
+        }
+        
         let result = self.value!
         self.value = nil
 
