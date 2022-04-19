@@ -73,6 +73,7 @@ public class MainThreadSynchronizer
     }
 }
 
+@available(macOS 12.0, *)
 public class AsyncAwaitSynchronizer<T>
 {
     static public func sync<T>(_ function: @escaping AsyncCaller<T>) -> T

@@ -1,4 +1,5 @@
-@preconcurrency import XCTest
+import XCTest
+
 @testable import Chord
 import Datable
 
@@ -51,6 +52,7 @@ final class ChordTests: XCTestCase {
         XCTAssertEqual(result, correct)
     }
     
+    @available(macOS 12.0.0, *)
     func testBlockingQueue() async
     {
         let correct = 1
