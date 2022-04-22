@@ -30,31 +30,21 @@ public class BlockingQueue<T>: @unchecked Sendable
     
     public func enqueue(element: T)
     {
-//        print("BlockingQueue[\(self.name)].enqueue(\(element))")
-//        print("BlockingQueue[\(self.name)].enqueue: waiting on enqueueLock")
         enqueueLock.wait()
-//        print("BlockingQueue[\(self.name)].enqueue: passed enqueueLock")
 
         self.value = element
 
-//        print("BlockingQueue[\(self.name)].enqueue: sending dequeueLock signal")
-        dequeueLock.signal()
-//        print("BlockingQueue[\(self.name)].enqueue: sent dequeueLock signal")
+        _ = dequeueLock.signal()
     }
     
     public func dequeue() -> T
     {
-//        print("BlockingQueue[\(self.name)].dequeue()")
-//        print("BlockingQueue[\(self.name)].dequeue: waiting on dequeueLock")
         dequeueLock.wait()
-//        print("BlockingQueue[\(self.name)].dequeue: passed dequeueLock")
-
+        
         let result = self.value!
         self.value = nil
 
-//        print("BlockingQueue[\(self.name)].dequeue: sending enqueueLock signal")
-        enqueueLock.signal()
-//        print("BlockingQueue[\(self.name)].dequeue: sent enqueueLock signal")
+        _ = enqueueLock.signal()
 
         return result
     }
