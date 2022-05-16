@@ -8,7 +8,9 @@
 import Foundation
 
 public typealias Callback<T> = (T) -> Void
+public typealias Callback2<S, T> = (S, T) -> Void
 public typealias Caller<T> = (@escaping Callback<T>) -> Void
+public typealias Caller2<S, T> = (@escaping Callback2<S, T>) -> Void
 public typealias CallerThrows<T> = (@escaping Callback<T>) throws -> Void
 public typealias AsyncCaller<T> = () async -> T
 
@@ -29,6 +31,23 @@ public class Synchronizer
         }
         lock.wait()
         
+        return result!
+    }
+
+    static public func sync2<S, T>(_ function: @escaping Caller2<S, T>) -> (S, T)
+    {
+        let lock = DispatchGroup()
+
+        var result: (S, T)?
+
+        lock.enter()
+        function
+        {
+            result = ($0, $1)
+            lock.leave()
+        }
+        lock.wait()
+
         return result!
     }
 
