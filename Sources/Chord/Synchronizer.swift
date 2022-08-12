@@ -13,6 +13,7 @@ public typealias Caller<T> = (@escaping Callback<T>) -> Void
 public typealias Caller2<S, T> = (@escaping Callback2<S, T>) -> Void
 public typealias CallerThrows<T> = (@escaping Callback<T>) throws -> Void
 public typealias AsyncCaller<T> = () async -> T
+public typealias AsyncEffect = () async -> Void
 public typealias AsyncThrowingEffect = () async throws -> Void
 
 // Convert a failable async function into a synchronous function with an optional return value
@@ -123,6 +124,37 @@ public class AsyncAwaitSynchronizer<T>
         lock.wait()
 
         return self.result!
+    }
+}
+
+@available(macOS 12.0, *)
+public class AsyncAwaitEffectSynchronizer
+{
+    static public func sync(_ function: @escaping AsyncEffect)
+    {
+        let synchronizer = AsyncAwaitEffectSynchronizer(function)
+        return synchronizer.sync()
+    }
+
+    let function: AsyncEffect
+
+    public init(_ function: @escaping AsyncEffect)
+    {
+        self.function = function
+    }
+
+    func sync()
+    {
+        let lock = DispatchSemaphore(value: 0)
+
+        async // Ignore warning about deprecation of async in favor of Task as Task does not currently work on Linux
+        {
+            await function()
+
+            lock.signal()
+        }
+
+        lock.wait()
     }
 }
 
