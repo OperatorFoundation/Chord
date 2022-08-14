@@ -13,6 +13,7 @@ public typealias Caller<T> = (@escaping Callback<T>) -> Void
 public typealias Caller2<S, T> = (@escaping Callback2<S, T>) -> Void
 public typealias CallerThrows<T> = (@escaping Callback<T>) throws -> Void
 public typealias AsyncCaller<T> = () async -> T
+public typealias AsyncThrowingCaller<T> = () async throws -> T
 public typealias AsyncEffect = () async -> Void
 public typealias AsyncThrowingEffect = () async throws -> Void
 
@@ -124,6 +125,52 @@ public class AsyncAwaitSynchronizer<T>
         lock.wait()
 
         return self.result!
+    }
+}
+
+@available(macOS 12.0, *)
+public class AsyncAwaitThrowingSynchronizer<T>
+{
+    static public func sync<T>(_ function: @escaping AsyncThrowingCaller<T>) throws -> T
+    {
+        let synchronizer = AsyncAwaitThrowingSynchronizer<T>(function)
+        return try synchronizer.sync()
+    }
+
+    let function: AsyncThrowingCaller<T>
+
+    public init(_ function: @escaping AsyncThrowingCaller<T>)
+    {
+        self.function = function
+    }
+
+    func sync() throws -> T
+    {
+        let queue = BlockingQueue<Result<T,Error>>()
+
+        async // Ignore warning about deprecation of async in favor of Task as Task does not currently work on Linux
+        {
+            do
+            {
+                let result = try await function()
+                queue.enqueue(element: Result.success(result))
+            }
+            catch
+            {
+                queue.enqueue(element: Result.failure(error))
+            }
+        }
+
+        let result = queue.dequeue()
+
+        switch result
+        {
+            case .success(let value):
+                return value
+
+            case .failure(let error):
+                throw error
+        }
     }
 }
 
