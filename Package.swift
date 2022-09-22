@@ -5,7 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "Chord",
-    platforms: [.macOS(.v10_15),
+    platforms: [.macOS(.v10_10),
                 .iOS(.v15)
                ],
     products: [
