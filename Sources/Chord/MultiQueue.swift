@@ -33,7 +33,7 @@ public class MultiQueue<Product>
     }
 }
 
-public class Producer<Product>
+open class Producer<Product>
 {
     let uuid = UUID()
     let multi: MultiQueue<Product>
@@ -71,12 +71,12 @@ public class Producer<Product>
         self.cleanup()
     }
 
-    func read() throws -> Product
+    open func read() throws -> Product
     {
         throw MultiQueueError.unimplemented
     }
 
-    func cleanup()
+    open func cleanup()
     {
     }
 }
