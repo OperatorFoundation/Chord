@@ -11,6 +11,7 @@ public typealias Callback<T> = (T) -> Void
 public typealias Callback2<S, T> = (S, T) -> Void
 public typealias Caller<T> = (@escaping Callback<T>) -> Void
 public typealias Caller2<S, T> = (@escaping Callback2<S, T>) -> Void
+public typealias CallerWithArg<S, T> = (S, @escaping Callback<T>) -> Void
 public typealias CallerThrows<T> = (@escaping Callback<T>) throws -> Void
 public typealias AsyncCaller<T> = () async -> T
 public typealias AsyncThrowingCaller<T> = () async throws -> T
@@ -34,6 +35,23 @@ public class Synchronizer
         }
         lock.wait()
         
+        return result!
+    }
+
+    static public func sync<S, T>(_ arg: S, _ function: @escaping CallerWithArg<S, T>) -> T
+    {
+        let lock = DispatchGroup()
+
+        var result: T?
+
+        lock.enter()
+        function(arg)
+        {
+            result = $0
+            lock.leave()
+        }
+        lock.wait()
+
         return result!
     }
 
