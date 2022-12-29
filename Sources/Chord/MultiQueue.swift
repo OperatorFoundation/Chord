@@ -38,14 +38,13 @@ open class Producer<Product>
     let uuid = UUID()
     let multi: MultiQueue<Product>
 
-    var thread: Thread? = nil
     var running: Bool = true
 
     public init(multi: MultiQueue<Product>)
     {
         self.multi = multi
 
-        self.thread = Thread
+        Task
         {
             self.readLoop()
         }
@@ -78,6 +77,7 @@ open class Producer<Product>
 
     open func cleanup()
     {
+        self.running = false
     }
 }
 
