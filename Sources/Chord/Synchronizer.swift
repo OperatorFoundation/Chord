@@ -7,8 +7,10 @@
 
 import Foundation
 
+public typealias Callback0 = () -> Void
 public typealias Callback<T> = (T) -> Void
 public typealias Callback2<S, T> = (S, T) -> Void
+public typealias Caller0 = (@escaping Callback0) -> Void
 public typealias Caller<T> = (@escaping Callback<T>) -> Void
 public typealias Caller2<S, T> = (@escaping Callback2<S, T>) -> Void
 public typealias CallerWithArg<S, T> = (S, @escaping Callback<T>) -> Void
@@ -110,6 +112,25 @@ public class MainThreadSynchronizer
         lock.wait()
         
         return result!
+    }
+}
+
+public class MainThreadEffectSynchronizer
+{
+    static public func sync(_ function: @escaping Caller0)
+    {
+        let lock = DispatchGroup()
+
+        lock.enter()
+        DispatchQueue.main.async
+        {
+            function
+            {
+                lock.leave()
+            }
+        }
+
+        lock.wait()
     }
 }
 
