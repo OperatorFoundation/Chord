@@ -134,6 +134,29 @@ public class MainThreadEffectSynchronizer
     }
 }
 
+public class MainThreadEffect
+{
+    static public func sync(_ function: @escaping Callback0)
+    {
+        let lock = DispatchSemaphore(value: 0)
+
+        if Thread.isMainThread
+        {
+            function()
+        }
+        else
+        {
+            DispatchQueue.main.async
+            {
+                function()
+                lock.signal()
+            }
+
+            lock.wait()
+        }
+    }
+}
+
 @available(macOS 12.0, *)
 public class AsyncAwaitSynchronizer<T>
 {
