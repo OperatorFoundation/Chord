@@ -110,13 +110,14 @@ final class ChordTests: XCTestCase {
         {
             callback in
 
-            session.dataTask(with: request)
+            let task = session.dataTask(with: request)
             {
                 maybeData, maybeResponse, maybeError in
 
                 let result = (maybeData, maybeResponse, maybeError)
                 callback(result)
             }
+            task.resume()
         }
 
         print(result)
