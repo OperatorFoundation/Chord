@@ -1,3 +1,4 @@
+import Foundation
 import XCTest
 
 @testable import Chord
@@ -89,5 +90,35 @@ final class ChordTests: XCTestCase {
         sleep(5)
         repeatingTask.cancel()
         repeatingTask.wait()
+    }
+
+    typealias URLSessionResult = (Data?, URLResponse?, (any Error)?)
+
+    func testURLSession()
+    {
+        let session = URLSession.shared
+        let url = URL(string: "https://google.com/")!
+        let request = URLRequest(url: url)
+        session.dataTask(with: request)
+        {
+            maybeData, maybeResponse, maybeError in
+
+            return
+        }
+
+        let result: URLSessionResult = Synchronizer.sync<URLSessionResult>
+        {
+            callback in
+
+            session.dataTask(with: request)
+            {
+                maybeData, maybeResponse, maybeError in
+
+                let result = (maybeData, maybeResponse, maybeError)
+                callback(result)
+            }
+        }
+
+        print(result)
     }
 }
