@@ -41,7 +41,7 @@ public class Asynchronizer
 
 public class AsyncAwaitAsynchronizer
 {
-    static func async(_ blockingCall: @escaping () -> Void ) async
+    static public func async(_ blockingCall: @escaping () -> Void ) async
     {
         func dispatch(completion: @escaping () -> Void)
         {
@@ -63,7 +63,7 @@ public class AsyncAwaitAsynchronizer
         }
     }
 
-    static func async(_ blockingCall: @escaping () throws -> Void ) async throws
+    static public func async(_ blockingCall: @escaping () throws -> Void ) async throws
     {
         func dispatch(completion: @escaping (Error?) -> Void)
         {
@@ -101,7 +101,7 @@ public class AsyncAwaitAsynchronizer
         }
     }
 
-    static func async<T>(_ blockingCall: @escaping () -> T ) async -> T
+    static public func async<T>(_ blockingCall: @escaping () -> T ) async -> T
     {
         func dispatch(completion: @escaping (T) -> Void)
         {
@@ -125,7 +125,7 @@ public class AsyncAwaitAsynchronizer
         }
     }
 
-    static func async<T>(_ blockingCall: @escaping () throws -> T ) async throws -> T
+    static public func async<T>(_ blockingCall: @escaping () throws -> T ) async throws -> T
     {
         func dispatch(completion: @escaping (Result<T,Error>) -> Void)
         {
