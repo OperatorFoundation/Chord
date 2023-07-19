@@ -38,3 +38,128 @@ public class Asynchronizer
         }
     }
 }
+
+public class AsyncAwaitAsynchronizer
+{
+    static func async(_ blockingCall: @escaping () -> Void ) async
+    {
+        func dispatch(completion: @escaping () -> Void)
+        {
+            DispatchQueue.global(qos: .userInitiated).async
+            {
+                blockingCall()
+                completion()
+            }
+        }
+
+        return await withCheckedContinuation
+        {
+            continuation in
+
+            dispatch
+            {
+                continuation.resume(returning: ())
+            }
+        }
+    }
+
+    static func async(_ blockingCall: @escaping () throws -> Void ) async throws
+    {
+        func dispatch(completion: @escaping (Error?) -> Void)
+        {
+            DispatchQueue.global(qos: .userInitiated).async
+            {
+                do
+                {
+                    try blockingCall()
+                    completion(nil)
+                }
+                catch
+                {
+                    completion(error)
+                }
+            }
+        }
+
+        return try await withCheckedThrowingContinuation
+        {
+            continuation in
+
+            dispatch
+            {
+                maybeError in
+
+                if let error = maybeError
+                {
+                    continuation.resume(throwing: error)
+                }
+                else
+                {
+                    continuation.resume(returning: ())
+                }
+            }
+        }
+    }
+
+    static func async<T>(_ blockingCall: @escaping () -> T ) async -> T
+    {
+        func dispatch(completion: @escaping (T) -> Void)
+        {
+            DispatchQueue.global(qos: .userInitiated).async
+            {
+                let result: T = blockingCall()
+                completion(result)
+            }
+        }
+
+        return await withCheckedContinuation
+        {
+            continuation in
+
+            dispatch
+            {
+                result in
+
+                continuation.resume(returning: result)
+            }
+        }
+    }
+
+    static func async<T>(_ blockingCall: @escaping () throws -> T ) async throws -> T
+    {
+        func dispatch(completion: @escaping (Result<T,Error>) -> Void)
+        {
+            DispatchQueue.global(qos: .userInitiated).async
+            {
+                do
+                {
+                    let result = try blockingCall()
+                    completion(Result.success(result))
+                }
+                catch
+                {
+                    completion(Result.failure(error))
+                }
+            }
+        }
+
+        return try await withCheckedThrowingContinuation
+        {
+            continuation in
+
+            dispatch
+            {
+                result in
+
+                switch result
+                {
+                    case .success(let value):
+                        continuation.resume(returning: value)
+
+                    case .failure(let error):
+                        continuation.resume(throwing: error)
+                }
+            }
+        }
+    }
+}
