@@ -16,21 +16,18 @@ public enum PromiseStatus<T>
 
 public class Promise<T>
 {
-    let function: () async throws -> T
     let queue: DispatchQueue = DispatchQueue(label: "Promise")
     var value: PromiseStatus<T> = .waiting
 
     public init(_ function: @escaping () async throws -> T)
     {
-        self.function = function
-
         self.queue.async
         {
             Task
             {
                 do
                 {
-                    let output = try await self.function()
+                    let output = try await function()
                     self.value = .success(output)
                 }
                 catch
@@ -39,6 +36,11 @@ public class Promise<T>
                 }
             }
         }
+    }
+
+    public init(value: T)
+    {
+        self.value = .success(value)
     }
 
     public func result() -> PromiseStatus<T>
