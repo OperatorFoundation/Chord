@@ -122,4 +122,25 @@ final class ChordTests: XCTestCase {
 
         print(result)
     }
+
+    func testAsyncQueue() async
+    {
+        let dequeued = expectation(description: "dequeued")
+
+        let queue: AsyncQueue<Int> = AsyncQueue<Int>()
+
+        Task
+        {
+            await queue.enqueue(element: 4)
+        }
+
+        Task
+        {
+            let value = await queue.dequeue()
+            XCTAssertEqual(value, 4)
+            dequeued.fulfill()
+        }
+
+        await fulfillment(of: [dequeued], timeout: 5) // 5 seconds
+    }
 }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public actor AsyncQueue<T>
+public class AsyncQueue<T>
 {
     let queue: BlockingQueue<T>
 
@@ -23,7 +23,7 @@ public actor AsyncQueue<T>
         }
     }
 
-    public func enqueue(element: T)
+    public func enqueue(element: T) async
     {
         AsyncAwaitSynchronizer<T>.sync
         {
@@ -31,7 +31,7 @@ public actor AsyncQueue<T>
         }
     }
 
-    public func dequeue() -> T
+    public func dequeue() async -> T
     {
         return AsyncAwaitSynchronizer<T>.sync
         {
