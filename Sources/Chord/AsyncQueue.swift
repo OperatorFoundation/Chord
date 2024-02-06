@@ -25,7 +25,7 @@ public class AsyncQueue<T>
 
     public func enqueue(element: T) async
     {
-        AsyncAwaitSynchronizer<T>.sync
+        await AsyncAwaitAsynchronizer.async<T>
         {
             self.queue.enqueue(element: element)
         }
@@ -33,7 +33,7 @@ public class AsyncQueue<T>
 
     public func dequeue() async -> T
     {
-        return AsyncAwaitSynchronizer<T>.sync
+        await AsyncAwaitAsynchronizer.async<T>
         {
             return self.queue.dequeue()
         }
