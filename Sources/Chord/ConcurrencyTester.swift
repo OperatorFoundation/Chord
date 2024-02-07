@@ -36,7 +36,7 @@ public class ConcurrencyTester
             self.lock.signal()
         }
 
-        let result = self.lock.wait(timeout: .now().advanced(by: .seconds(1)))
+        let result = self.lock.wait(timeout: .now() + DispatchTimeInterval.seconds(1))
         switch result
         {
             case .success:
