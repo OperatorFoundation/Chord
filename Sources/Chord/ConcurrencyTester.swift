@@ -12,14 +12,16 @@ public class ConcurrencyTester
     static public func test(_ logline: String? = nil) throws
     {
         let tester = ConcurrencyTester()
-        guard tester.test() else
+        let working = tester.test()
+
+        guard working else
         {
             if let logline
             {
                 print(logline)
             }
 
-            print("<emoji>  Concurrency is broken.")
+            print("⚠️ Concurrency is broken.")
 
             throw ConcurrencyTesterError.concurrencyIsBroken
         }
@@ -35,15 +37,18 @@ public class ConcurrencyTester
     {
         Task
         {
+            try await Task.sleep(for: Duration.seconds(1))
             self.lock.signal()
         }
 
-        let result = self.lock.wait(timeout: .now() + DispatchTimeInterval.seconds(1))
+        let result = self.lock.wait(timeout: .now() + DispatchTimeInterval.seconds(2))
         switch result
         {
+            // Concurrency is working
             case .success:
                 return true
 
+            // Concurrency is broken
             case .timedOut:
                 return false
         }
