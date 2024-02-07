@@ -9,7 +9,7 @@ import Foundation
 
 public class ConcurrencyTester
 {
-    static func test(_ logline: String? = nil) throws
+    static public func test(_ logline: String? = nil) throws
     {
         let tester = ConcurrencyTester()
         guard tester.test() else
@@ -19,7 +19,7 @@ public class ConcurrencyTester
                 print(logline)
             }
 
-            print("Concurrency is broken.")
+            print("<emoji>  Concurrency is broken.")
 
             throw ConcurrencyTesterError.concurrencyIsBroken
         }
