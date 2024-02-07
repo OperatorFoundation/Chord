@@ -19,7 +19,7 @@ public class ConcurrencyTester
                 print(logline)
             }
 
-            print("<emoji>  Concurrency is broken.")
+            print("⚠️ Concurrency is broken.")
 
             throw ConcurrencyTesterError.concurrencyIsBroken
         }
