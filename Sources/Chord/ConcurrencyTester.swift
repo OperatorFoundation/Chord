@@ -9,6 +9,20 @@ import Foundation
 
 public class ConcurrencyTester
 {
+    static func test(_ logline: String? = nil) throws
+    {
+        let tester = ConcurrencyTester()
+        guard tester.test() else
+        {
+            if let logline
+            {
+                print(logline)
+            }
+
+            throw ConcurrencyTesterError.concurrencyIsBroken
+        }
+    }
+
     let lock = DispatchSemaphore(value: 0)
 
     public init()
@@ -32,4 +46,9 @@ public class ConcurrencyTester
                 return false
         }
     }
+}
+
+public enum ConcurrencyTesterError: Error
+{
+    case concurrencyIsBroken
 }
