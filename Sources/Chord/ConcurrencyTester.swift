@@ -19,6 +19,8 @@ public class ConcurrencyTester
                 print(logline)
             }
 
+            print("Concurrency is broken.")
+
             throw ConcurrencyTesterError.concurrencyIsBroken
         }
     }
