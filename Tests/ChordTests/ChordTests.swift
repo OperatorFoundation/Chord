@@ -173,4 +173,21 @@ final class ChordTests: XCTestCase {
             return
         }
     }
+
+    func testAsyncTimer() throws
+    {
+        let lock = DispatchSemaphore(value: 0)
+
+        Task
+        {
+            let timer = await AsyncTimer.scheduledTimer(withTimeInterval: 10, repeats: false)
+            {
+                timer in
+
+                lock.signal()
+            }
+        }
+
+        lock.wait()
+    }
 }
