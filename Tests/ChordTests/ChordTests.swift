@@ -143,4 +143,51 @@ final class ChordTests: XCTestCase {
 
         await fulfillment(of: [dequeued], timeout: 5) // 5 seconds
     }
+
+    func testConcurrencyTesterWorking() async
+    {
+        let tester = ConcurrencyTester()
+        guard tester.test() else
+        {
+            XCTFail()
+            return
+        }
+    }
+
+    func testConcurrencyTesterNotWorking() async throws
+    {
+        Task
+        {
+            while true
+            {
+                try await Task.sleep(for: Duration.seconds(1))
+            }
+        }
+
+        try await Task.sleep(for: Duration.seconds(1))
+
+        let tester = ConcurrencyTester()
+        if tester.test()
+        {
+            XCTFail()
+            return
+        }
+    }
+
+    func testAsyncTimer() throws
+    {
+        let lock = DispatchSemaphore(value: 0)
+
+        Task
+        {
+            let timer = await AsyncTimer.scheduledTimer(withTimeInterval: 10, repeats: false)
+            {
+                timer in
+
+                lock.signal()
+            }
+        }
+
+        lock.wait()
+    }
 }
