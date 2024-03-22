@@ -160,7 +160,7 @@ public class MainThreadEffect
 @available(macOS 12.0, *)
 public class AsyncAwaitSynchronizer<T>
 {
-    static public func sync<T>(_ function: @escaping AsyncCaller<T>) -> T
+    static public func sync(_ function: @escaping AsyncCaller<T>) -> T
     {
         let synchronizer = AsyncAwaitSynchronizer<T>(function)
         return synchronizer.sync()
@@ -178,7 +178,7 @@ public class AsyncAwaitSynchronizer<T>
     {
         let lock = DispatchSemaphore(value: 0)
 
-        async // Ignore warning about deprecation of async in favor of Task as Task does not currently work on Linux
+        Task
         {
             self.result = await function()
             lock.signal()
@@ -193,7 +193,7 @@ public class AsyncAwaitSynchronizer<T>
 @available(macOS 12.0, *)
 public class AsyncAwaitThrowingSynchronizer<T>
 {
-    static public func sync<T>(_ function: @escaping AsyncThrowingCaller<T>) throws -> T
+    static public func sync(_ function: @escaping AsyncThrowingCaller<T>) throws -> T
     {
         let synchronizer = AsyncAwaitThrowingSynchronizer<T>(function)
         return try synchronizer.sync()
@@ -210,7 +210,7 @@ public class AsyncAwaitThrowingSynchronizer<T>
     {
         let queue = BlockingQueue<Result<T,Error>>()
 
-        async // Ignore warning about deprecation of async in favor of Task as Task does not currently work on Linux
+        Task
         {
             do
             {
@@ -256,7 +256,7 @@ public class AsyncAwaitEffectSynchronizer
     {
         let lock = DispatchSemaphore(value: 0)
 
-        async // Ignore warning about deprecation of async in favor of Task as Task does not currently work on Linux
+        Task
         {
             await function()
 
@@ -287,7 +287,7 @@ public class AsyncAwaitThrowingEffectSynchronizer
     {
         let lock = DispatchSemaphore(value: 0)
 
-        async // Ignore warning about deprecation of async in favor of Task as Task does not currently work on Linux
+        Task
         {
             do
             {
